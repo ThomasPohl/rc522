@@ -36,13 +36,16 @@ void RunCallback(const FunctionCallbackInfo<Value>& args) {
 
             // The status that no tag is found is sometimes set even when a tag is within reach of the tag reader
             // to prevent that the reset is performed the no tag event has to take place multiple times (ger: entrprellen)
-            if (noTagFoundCount > 2) {
+            if (noTagFoundCount == 2) {
                 // Sets the content of the array 'rfidChipSerialNumberRecentlyDetected' back to zero
                 memset(&rfidChipSerialNumberRecentlyDetected[0], 0, sizeof (rfidChipSerialNumberRecentlyDetected));
-                noTagFoundCount = 0;
-            } else {
-                noTagFoundCount++;
+                Local<Value> argv[argc] = {
+                    String::Empty(isolate)
+                };
+
+                callback->Call(isolate->GetCurrentContext()->Global(), argc, argv);
             }
+            noTagFoundCount++;
 
             usleep(200000);
             continue;
